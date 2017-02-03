@@ -1,0 +1,40 @@
+#!/bin/bash
+
+#for PROD in Cloud:\/6 ; do 
+#    for DIST in SLE_12_SP1 ; do
+#        for ARCH in noarch repodata x86_64 ; do 
+#            wget --progress=bar -m -N --no-parent http://download.suse.de/ibs/Devel:/${PROD}/${DIST}/${ARCH}
+#        done
+#    done
+#done
+
+rm -fv mirror.d/*-doc
+for PROD in Cloud7 Manager Storage_4 SLERT12-SP2 SLES12-SP2 SLE-HA12-SP2 SMT11 SLEPOS SLEPOS12 Public_Cloud KIWI FATE DAPS ; do
+    echo "ENABLED=0" > mirror.d/${PROD}-doc
+    echo "REJECT=\"index.html?*\"" >> mirror.d/${PROD}-doc
+    echo "URL=http://docserv.nue.suse.com/documents/${PROD}/" >> mirror.d/${PROD}-doc
+done
+
+#for INSTALL in SLE-12-SP1-JeOS-GM ; do
+#    wget --progress=bar -m -N --no-parent download.suse.de/install/${INSTALL}/
+#done
+
+echo "ENABLED=0" > mirror.d/infrastructure-SLE_12_SP1
+echo "URL=http://download.opensuse.org/repositories/openSUSE:/infrastructure/SLE_12_SP1/" >> mirror.d/infrastructure
+
+echo "ENABLED=0" > mirror.d/python-SLE_12_SP1
+echo "URL=http://download.opensuse.org/repositories/devel:/languages:/python/SLE_12_SP1/x86_64/" >> mirror.d/python-SLE_12_SP1
+
+#wget --progress=bar -m -N --no-parent http://gliocas.provo.suse.com/SUSE_Training/Internal_Use/
+
+#for VM in 3124 3125 SLE321 SLE322 SMGRR201 SOC101 SOC201 SOC202 ; do 
+#for VM in 3124 3125 SLE321 SLE322 SMGRR201 SOC101 SOC201 SOC202 ; do 
+echo "ENABLED=1" > mirror.d/training-vm
+echo "URL=http://gliocas.provo.suse.com/SUSE_Training/VM_Files/" >> mirror.d/training-vm
+#done
+echo "ENABLED=1" > mirror.d/training-enablement
+echo "URL=http://gliocas.provo.suse.com/SUSE_Training/Enablement_Use/" >> mirror.d/training-enablement
+
+echo "ENABLED=1" > mirror.d/training-lab_image
+echo "URL=http://gliocas.provo.suse.com/SUSE_Training/Enablement_Use/" >> mirror.d/training-lab_image
+#find /exports/ibs-mirror/ -name "index.html?*" -delete

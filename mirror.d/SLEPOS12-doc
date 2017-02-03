@@ -1,0 +1,3 @@
+ENABLED=1
+REJECT="index.html?*"
+URL=http://docserv.nue.suse.com/documents/SLEPOS12/

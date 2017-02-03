@@ -1,0 +1,20 @@
+#!/bin/bash
+
+for REPO in mirror.d/* ; do 
+    ENABLED=0
+    URL=""
+    REJECT="*.mirrorlist,*index.html*,*.old,*src.rpm,*debugsrc*.rpm"
+    if [ -s ${REPO} ] ; then
+        source ${REPO}
+        if [ ${ENABLED} == 1 ]; then
+            CONF=`echo ${REPO}|cut -d "/" -f 2`
+            echo "Mirroring ${CONF}"
+            if wget --progress=bar -m -N -c --no-parent --reject "${REJECT}" --exclude-directories "/src,/ppc64le,/s390x" ${URL}; then
+                echo "${CONF} mirrored successfully"
+            else
+                echo "${CONF} was unable to mirror"
+            fi
+
+        fi
+    fi
+done
