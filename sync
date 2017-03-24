@@ -1,15 +1,33 @@
 #!/bin/bash
+if [ -z "${DEST}" ] ; then
+    DEST="/suse/mirror/"
+fi
 
-for REPO in mirror.d/* ; do 
+if [ -z "${ARCHFILTER}" ] ; then
+    ARCHFILTER="-*/ppc64* -*/s390x/*"
+fi
+
+if [ -z "${DISTROS}" ] ; then
+    DISTROS="-*/SLE_11* -*/SLE_12/ -*/SLE_12_SP1/* -*/openSUSE_13.2/* -*/openSUSE_Leap_42.1/* -*/openSUSE_Tumbleweed/*"
+fi
+
+if [ -z "$@" ] ; then
+    ARGS="*"
+else
+    ARGS=$@
+fi
+
+for REPO in mirror.d/${ARGS} ; do 
     ENABLED=0
     URL=""
-    REJECT="*.mirrorlist,*index.html*,*.old,*src.rpm,*debugsrc*.rpm"
+    REJECT="-*.mirrorlist* -*.old -*/src/* -*debug* -*index*html* +*index.html" 
     if [ -s ${REPO} ] ; then
         source ${REPO}
         if [ ${ENABLED} == 1 ]; then
             CONF=`echo ${REPO}|cut -d "/" -f 2`
             echo "Mirroring ${CONF}"
-            if wget --progress=bar -m -N -c --no-parent --reject "${REJECT}" --exclude-directories "/src,/ppc64le,/s390x" ${URL}; then
+            if httrack ${URL} -p2 --update --path ${DEST} +*.xml +*.gz +*.asc +*.key +*.rpm ${ARCHFILTER} ${DISTROS} ${REJECT}; then
+            #if wget --progress=bar -m -N -c --no-parent --reject "${REJECT}" --exclude-directories "/src,/ppc64le,/s390x" ${URL}; then
                 echo "${CONF} mirrored successfully"
             else
                 echo "${CONF} was unable to mirror"
